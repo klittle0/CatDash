@@ -8,7 +8,8 @@ public class Icon {
     private int y;
     private CatDashViewer v;
     private boolean isDead;
-    private static final int DY = 20;
+    private int dy;
+    private static final int GROUND = 470;
 
     // Constructor
     public Icon(String type, CatDashViewer v){
@@ -24,22 +25,22 @@ public class Icon {
         }
         // Replace once background is there
         x = 200;
-        y = 470;
+        y = GROUND;
     }
 
+    //
     public void jump(){
-        // Makes the icon move up
-        //while (y > 100){
-           // y -= DY;
-       // }
-        // Makes the icon move back down
-        //while (y < 600){
-          //  y += DY;
-       // }
-        // Create a parabola for the icon's motion
-        // How should I use 9.8 m / s^2?
+        dy = -30;
+    }
 
-        y = 100;
+    public void gravity(){
+        if (!isOnGround() || (dy < 0 && isOnGround())){
+            y+=dy;
+            dy += 6;
+        }
+        if (isOnGround()){
+            y = GROUND;
+        }
     }
     // Draws the character's icon differently based on
     public void draw(Graphics g, CatDashViewer v){
@@ -54,4 +55,33 @@ public class Icon {
     public boolean isDead() {
         return isDead;
     }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
+    public boolean checkDead(Obstacle current){
+        // If right of icon hits obstacle and icon is not highter than obstacle
+        if ((x + 200) == current.getX() && (y + 200) >= current.getHeight()){
+            isDead = true;
+        }
+        isDead = false;
+        return isDead;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public boolean isOnGround(){
+        if (y >= GROUND){
+            return true;
+        }
+        return false;
+    }
+
 }
