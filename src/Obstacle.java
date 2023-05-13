@@ -2,28 +2,27 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Obstacle {
-    private Image cloud, mushroom;
+    private Image[] mushroom;
     private int x;
-    private static final int GROUND = 470;
+    private static final int GROUND = 520;
     private static final int SCREEN_WIDTH = 1200;
     private int dx;
-    private int height;
-    private int width;
+    private static final int SIZE = 80;
     private CatDashViewer v;
     private CatDashViewer game;
 
     // Constructor
     public Obstacle(CatDashViewer v){
         this.v = v;
-        mushroom = new ImageIcon("Resources/mushroomblueF.png").getImage();
-        height = mushroom.getHeight(v);
-        width = mushroom.getWidth(v);
-        dx = -5;
+        mushroom = new Image[2];
+        mushroom[0] = new ImageIcon("Resources/mushroomBlueF.png").getImage();
+        mushroom[1] = new ImageIcon("Resources/mushroomF.png").getImage();
+        dx = -30;
         // IS THIS A MAGIC NUMBER?
         x = 1200;
     }
     public boolean isOnScreen() {
-        if (x + width < 0 || x > SCREEN_WIDTH){
+        if (x + SIZE < 0 || x > SCREEN_WIDTH){
             return false;
         }
         return true;
@@ -33,28 +32,19 @@ public class Obstacle {
         x += dx;
     }
 
-    public int getHeight() {
-        return height;
-    }
-
     // Places obstacle at starting position
     public void restart(){
         x = 1220;
     }
 
     // Draws a given obstacle
-    public void draw(Graphics g){
-        // use this to select which mushroom image to use
-        // int index = (int) (Math.random() * 1);
-        g.drawImage(mushroom, x, GROUND, 150, 150, v);
+    public void draw(Graphics g, int i){
+        i = i % 2;
+        g.drawImage(mushroom[i], x, GROUND, SIZE, SIZE, v);
     }
 
     public int getX() {
         return x;
-    }
-
-    public int getWidth() {
-        return width;
     }
 
 }

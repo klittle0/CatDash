@@ -10,9 +10,9 @@ public class ObstacleArray {
     private static final int SCREEN_WIDTH = 1200;
 
 
-    public ObstacleArray(Queue<Obstacle> offScreenObstacles){
+    public ObstacleArray(){
         onScreenObstacles = new ArrayList<Obstacle>();
-        this.offScreenObstacles = offScreenObstacles;
+        offScreenObstacles = new LinkedList<Obstacle>();
     }
 
     // Manages whether an obstacle is on or off screen/which data structure it belongs in
@@ -24,7 +24,6 @@ public class ObstacleArray {
             onScreenObstacles.remove(0);
             current.restart();
         }
-
     }
 
     public void addOnScreen(){
@@ -42,9 +41,13 @@ public class ObstacleArray {
     }
     // Draws all obstacles
     public void drawAll(Graphics g) {
-        for (Obstacle obstacle : onScreenObstacles) {
-            obstacle.draw(g);
+        for (int i = 0; i < onScreenObstacles.size(); i++) {
+            onScreenObstacles.get(i).draw(g, i);
         }
+    }
+
+    public Queue<Obstacle> getOffScreenObstacles() {
+        return offScreenObstacles;
     }
 
     public ArrayList<Obstacle> getOnScreenObstacles() {

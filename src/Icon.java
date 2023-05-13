@@ -3,40 +3,41 @@ import java.awt.*;
 
 public class Icon {
     private Image gameImage;
-    private Image deathImage;
     private int x;
     private int y;
+    private static final int OBSTACLE_SIZE = 80;
     private CatDashViewer v;
     private boolean isDead;
     private int dy;
-    private static final int GROUND = 470;
+    private static final int GROUND = 505;
 
     // Constructor
     public Icon(String type, CatDashViewer v){
         this.v = v;
         isDead = false;
         if (type.equals("Pusheen")){
-            gameImage = new ImageIcon("Resources/pusheen running.png").getImage();
-            deathImage = new ImageIcon("Resources/pusheenHit.png").getImage();
+            gameImage = new ImageIcon("Resources/pusheenRun.png").getImage();
         }
         else {
-            gameImage = new ImageIcon("Resources/pip running.png").getImage();
-            deathImage = new ImageIcon("Resources/pip hit.png").getImage();
+            gameImage = new ImageIcon("Resources/pipRun.png").getImage();
         }
         // Replace once background is there
         x = 200;
         y = GROUND;
+        dy = 0;
     }
 
     //
     public void jump(){
-        dy = -30;
+        if (isOnGround()){
+            dy = -50;
+        }
     }
 
     public void gravity(){
         if (!isOnGround() || (dy < 0 && isOnGround())){
             y+=dy;
-            dy += 6;
+            dy += 9;
         }
         if (isOnGround()){
             y = GROUND;
@@ -44,14 +45,9 @@ public class Icon {
     }
     // Draws the character's icon differently based on
     public void draw(Graphics g, CatDashViewer v){
-        if (!isDead){
-            g.drawImage(gameImage, x, y, 200, 200, v);
-        }
-        else{
-            g.drawImage(deathImage, x, y, 200, 200, v);
-        }
+        g.drawImage(gameImage, x, y, v);
     }
-
+    // Do I need this method at all?
     public boolean isDead() {
         return isDead;
     }
@@ -61,20 +57,22 @@ public class Icon {
     }
 
     public boolean checkDead(Obstacle current){
-        // If right of icon hits obstacle and icon is not highter than obstacle
-        if ((x + 200) == current.getX() && (y + 200) >= current.getHeight()){
+        int left = x;
+        int right = x + 200;
+        int top = y;
+        int bottom = y + 110;
+        int obstacleLeft = current.getX();
+        int obstacleRight = obstacleLeft + OBSTACLE_SIZE;
+        int obstacleTop = 520 + OBSTACLE_SIZE;
+        int obstacleBottom = 520;
+        // Checks to see if the player + obstacle are overlapping
+        if (left < obstacleRight && right > obstacleLeft && bottom > obstacleTop && top < obstacleBottom){
             isDead = true;
         }
-        isDead = false;
+        else{
+            isDead = false;
+        }
         return isDead;
-    }
-
-    public int getDy() {
-        return dy;
-    }
-
-    public int getY() {
-        return y;
     }
 
     public boolean isOnGround(){

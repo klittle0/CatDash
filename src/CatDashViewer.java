@@ -9,9 +9,10 @@ public class CatDashViewer extends JFrame implements MouseListener, MouseMotionL
     private final int WINDOW_HEIGHT = 800;
     private CatDash cat;
     private Image[] icons;
-    private Image[] obstacles;
     private Image background;
     private Image welcomeTitle;
+    private Image lossImage;
+    private Image victoryImage;
     private ObstacleArray manager;
     private Icon player;
 
@@ -19,20 +20,14 @@ public class CatDashViewer extends JFrame implements MouseListener, MouseMotionL
     public CatDashViewer(CatDash cat, ObstacleArray manager){
         this.cat = cat;
         this.manager = manager;
-        icons = new Image[4];
+        icons = new Image[2];
         background = new ImageIcon("Resources/background.png").getImage();
         welcomeTitle = new ImageIcon("Resources/selectCharacter.png").getImage();
+        lossImage = new ImageIcon("Resources/youLose.png").getImage();
         // Icon image options:
-        icons[0] = new ImageIcon("Resources/pusheen running.png").getImage();
-        icons[1] = new ImageIcon("Resources/pusheenHit.png").getImage();
-        icons[2] = new ImageIcon("Resources/pip running.png").getImage();
-        icons[3] = new ImageIcon("Resources/pip hit.png").getImage();
+        icons[0] = new ImageIcon("Resources/pusheenRun.png").getImage();
+        icons[1] = new ImageIcon("Resources/pipRun.png").getImage();
 
-        // Obstacle image options:
-        obstacles = new Image[3];
-        obstacles[0] = new ImageIcon("Resources/mushroomblueF.png").getImage();
-        obstacles[1] = new ImageIcon("Resources/mushroomF.png").getImage();
-        obstacles[2] = new ImageIcon("Resources/mushroomGreenF.png").getImage();
         // Sets up the window and the buffer strategy.
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("Cat Dash");
@@ -68,20 +63,22 @@ public class CatDashViewer extends JFrame implements MouseListener, MouseMotionL
     // Used in paint to do the actual painting
     public void myPaint(Graphics g){
         // Before game starts:
-        if (player != null && player.isDead()){
+        if (!cat.isStarted()){
             g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,this);
-        }
-        else if (!cat.isStarted()){
-            g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,this);
-            g.drawImage(welcomeTitle, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,this);
+            g.drawImage(welcomeTitle, 0, -100, WINDOW_WIDTH, WINDOW_HEIGHT,this);
             // Draw icon options
-            for (int i = 0; i < 4; i+= 2){
+            for (int i = 0; i < 2; i++){
                 // Custom width + height since they're too large for screen
-                g.drawImage(icons[i], (i) * 200 + 100, 300, 420, 440, this);
+                g.drawImage(icons[i], (i) * 400 + 150, 400, 420, 210, this);
             }
         }
+        // If player has died:
+        if (player != null && player.isDead()){
+            g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,this);
+            g.drawImage(lossImage, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,this);
+        }
         // Once user has selected their player, begin the game
-        else if (cat.isStarted()){
+        else if (cat.isStarted() && !player.isDead() && !cat.isEnded()){
             g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,this);
             player.draw(g, this);
             // While player is alive, draw the obstacles
@@ -157,7 +154,6 @@ public class CatDashViewer extends JFrame implements MouseListener, MouseMotionL
     public void keyTyped(KeyEvent e) {
 
     }
-    // THS METHOD IS NOT WORKING!?
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_UP)
