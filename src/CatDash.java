@@ -1,9 +1,9 @@
+// By Kate Little
+// 5/12/23
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.ArrayList;
 
 public class CatDash implements ActionListener {
     private CatDashViewer window;
@@ -19,7 +19,7 @@ public class CatDash implements ActionListener {
     // Constructor
     public CatDash(){
         isStarted = false;
-        // Initializes viewer
+        // Initializes viewer + obstacle manager
         manager = new ObstacleArray();
         window = new CatDashViewer(this, manager);
         // Initializes off-screen obstacles
@@ -27,13 +27,13 @@ public class CatDash implements ActionListener {
             manager.getOffScreenObstacles().add(new Obstacle(window));
         }
 
-        //Initialize timer
+        // Initializes timer
         obstacleTimer = new Timer(3000, new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 manager.addOnScreen();
                 int difference = (int) (System.currentTimeMillis() - startTime);
-                // Sets the time between mushrooms depending on the time the user has been playing
-                // As the player survives for longer, the mushrooms come faster
+                // Sets the time/distance between mushrooms depending on the duration the user has been playing
+                // If the player survives for longer, the mushrooms come faster
                 if (difference < 20000){
                     obstacleTimer.setDelay(4500);
                 }
@@ -53,14 +53,14 @@ public class CatDash implements ActionListener {
         });
     }
 
-    // Moves each obstacle and icon
+    // Is responsible for all recurring motion/changes to the screen
     public void actionPerformed(ActionEvent e){
-        // If player hits 1st obstacle:
+        // If player hits 1st obstacle/dies:
         if (manager.getOnScreenObstacles().size() == 1 && (player.checkDead(manager.getOnScreenObstacles().get(0)))){
             player.setDead(true);
             obstacleTimer.stop();
         }
-        // If player hits 1st or 2nd obstacle
+        // If player hits 1st or 2nd obstacle/dies:
         else if(manager.getOnScreenObstacles().size() > 1 && ((player.checkDead(manager.getOnScreenObstacles().get(0)) ||
                 (player.checkDead(manager.getOnScreenObstacles().get(1)))))){
             player.setDead(true);
@@ -79,6 +79,7 @@ public class CatDash implements ActionListener {
         window.repaint();
     }
 
+    // Begins the game
     public void setStarted(boolean started) {
         isStarted = started;
         player = window.getPlayer();

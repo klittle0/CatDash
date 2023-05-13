@@ -1,8 +1,9 @@
+// By Kate Little
+// 5/12/23
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
-import java.lang.Thread;
 
 public class CatDashViewer extends JFrame implements MouseListener, MouseMotionListener, KeyListener {
     private final int WINDOW_WIDTH = 1200;
@@ -12,6 +13,10 @@ public class CatDashViewer extends JFrame implements MouseListener, MouseMotionL
     private Image background;
     private Image welcomeTitle;
     private Image lossImage;
+    private static final int WIDTH1 = 420;
+    private static final int WIDTH2 = 440;
+    private static final int HEIGHT = 210;
+    private static final int WIDTH = 150;
     private Image victoryImage;
     private ObstacleArray manager;
     private Icon player;
@@ -66,10 +71,11 @@ public class CatDashViewer extends JFrame implements MouseListener, MouseMotionL
         if (!cat.isStarted()){
             g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,this);
             g.drawImage(welcomeTitle, 0, -100, WINDOW_WIDTH, WINDOW_HEIGHT,this);
-            // Draw icon options
+            // Draws icon options
             for (int i = 0; i < 2; i++){
                 // Custom width + height since they're too large for screen
-                g.drawImage(icons[i], (i) * 400 + 150, 400, 420, 210, this);
+                // The position is designed so that they are centered on screen
+                g.drawImage(icons[i], (i) * 400 + 150, WIDTH2 - 20, WIDTH2, HEIGHT, this);
             }
         }
         // If player has died:
@@ -96,19 +102,18 @@ public class CatDashViewer extends JFrame implements MouseListener, MouseMotionL
         int x = e.getX();
         int y = e.getY();
 
-        int pusheenLeftX = 150;
-        int pusheenRightX = 150 + 420;
-        int pusheenTopY = 300;
-        int pusheenBottomY = 300 + 440;
+        int pusheenLeftX = WIDTH * 2;
+        int pusheenRightX = WIDTH + WIDTH1;
+        int pusheenTopY = WIDTH * 2;
+        int pusheenBottomY = WIDTH * 2 + WIDTH2;
 
         int pipLeftX = 500;
-        int pipRightX =  500 + 420;
-        int pipTopY = 300;
-        int pipBottomY =  300 + 440;
+        int pipRightX =  500 + WIDTH1;
+        int pipTopY = WIDTH * 2;
+        int pipBottomY =  WIDTH * 2 + WIDTH2;
         // If the mouse presses the pusheen character before game start
         if (!cat.isStarted()){
             if (x > pusheenLeftX && x < pusheenRightX && y > pusheenTopY && y < pusheenBottomY){
-                // CAN I INITIALIZE THE PLAYER HERE? OR SHOULD IT BE IN CATDASH CLASS?
                 player = new Icon("Pusheen", this);
             }
             // If the mouse presses the pip character

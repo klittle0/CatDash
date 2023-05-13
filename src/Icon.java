@@ -1,3 +1,5 @@
+// By Kate Little
+// 5/12/23
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,6 +12,9 @@ public class Icon {
     private boolean isDead;
     private int dy;
     private static final int GROUND = 505;
+    private static final int WIDTH = 200;
+    private static final int HEIGHT = 110;
+    private static final int OBSTACLE_GROUND = 520;
 
     // Constructor
     public Icon(String type, CatDashViewer v){
@@ -21,19 +26,19 @@ public class Icon {
         else {
             gameImage = new ImageIcon("Resources/pipRun.png").getImage();
         }
-        // Replace once background is there
         x = 200;
         y = GROUND;
         dy = 0;
     }
 
-    //
+    // Sets the player's initial speed
     public void jump(){
         if (isOnGround()){
             dy = -50;
         }
     }
 
+    // Slows the player's jump + causes them to fall back to the ground
     public void gravity(){
         if (!isOnGround() || (dy < 0 && isOnGround())){
             y+=dy;
@@ -43,11 +48,11 @@ public class Icon {
             y = GROUND;
         }
     }
-    // Draws the character's icon differently based on
+    // Draws the player's icon
     public void draw(Graphics g, CatDashViewer v){
         g.drawImage(gameImage, x, y, v);
     }
-    // Do I need this method at all?
+
     public boolean isDead() {
         return isDead;
     }
@@ -56,15 +61,17 @@ public class Icon {
         isDead = dead;
     }
 
+    // Returns true if the player is dead
+    // Changes the value of isDead
     public boolean checkDead(Obstacle current){
         int left = x;
-        int right = x + 200;
+        int right = x + WIDTH;
         int top = y;
-        int bottom = y + 110;
+        int bottom = y + HEIGHT;
         int obstacleLeft = current.getX();
         int obstacleRight = obstacleLeft + OBSTACLE_SIZE;
-        int obstacleTop = 520 + OBSTACLE_SIZE;
-        int obstacleBottom = 520;
+        int obstacleTop = OBSTACLE_GROUND + OBSTACLE_SIZE;
+        int obstacleBottom = OBSTACLE_GROUND;
         // Checks to see if the player + obstacle are overlapping
         if (left < obstacleRight && right > obstacleLeft && bottom > obstacleTop && top < obstacleBottom){
             isDead = true;
@@ -75,11 +82,11 @@ public class Icon {
         return isDead;
     }
 
+    // Returns true if player is on the ground
     public boolean isOnGround(){
         if (y >= GROUND){
             return true;
         }
         return false;
     }
-
 }
